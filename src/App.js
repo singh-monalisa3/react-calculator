@@ -1,57 +1,54 @@
 import React, { useState } from 'react';
 import './App.css';
 
-function App() {
-  const [input, setInput] = useState('');
-  const [result, setResult] = useState('');
+const Calculator = () => {
+    const [input, setInput] = useState('');
+    const [result, setResult] = useState('');
+    const [error, setError] = useState('');
 
-  const handleClick = (value) => {
-    setInput(input + value);
-    setResult(''); // Clear result when new input is entered
-  };
+    const handleClick = (value) => {
+        setError('');
+        if (value === '=') {
+            if (input === '') {
+                setError('Error');
+                setResult('');
+                return;
+            }
+            try {
+                // Evaluate the expression
+                const evalResult = eval(input);
+                if (!isFinite(evalResult)) {
+                    setError('Infinity');
+                    setResult('');
+                } else {
+                    setResult(evalResult);
+                }
+            } catch (err) {
+                setError('Error');
+                setResult('');
+            }
+        } else if (value === 'C') {
+            setInput('');
+            setResult('');
+            setError('');
+        } else {
+            setInput(input + value);
+        }
+    };
 
-  const handleClear = () => {
-    setInput('');
-    setResult('');
-  };
-
-  const handleEqual = () => {
-    try {
-      if (input.trim() === '') {
-        setResult('Error');
-      } else if (input.includes('/0')) {
-        setResult('Infinity');
-      } else {
-        setResult(eval(input).toString());
-      }
-    } catch (error) {
-      setResult('Error');
-    }
-  };
-
-  return (
-    <div className="App">
-      <header className="App-header">
-        <h1>React Calculator</h1>
-        <input type="text" value={input} readOnly />
-        <div className="result">{result}</div>
-        <div className="button-container">
-          {['7', '8', '9', '+'].map((val) => (
-            <button key={val} onClick={() => handleClick(val)}>{val}</button>
-          ))}
-          {['4', '5', '6', '-'].map((val) => (
-            <button key={val} onClick={() => handleClick(val)}>{val}</button>
-          ))}
-          {['1', '2', '3', '*'].map((val) => (
-            <button key={val} onClick={() => handleClick(val)}>{val}</button>
-          ))}
-          {['C', '0', '=', '/'].map((val) => (
-            <button key={val} onClick={() => val === 'C' ? handleClear() : val === '=' ? handleEqual() : handleClick(val)}>{val}</button>
-          ))}
+    return (
+        <div className="calculator">
+            <h1>React Calculator</h1>
+            <input type="text" value={input} readOnly />
+            <div className="result">{result}</div>
+            <div className="error">{error}</div>
+            <div className="buttons">
+                {['7', '8', '9', '+', '4', '5', '6', '-', '1', '2', '3', '*', 'C', '0', '=', '/'].map((button) => (
+                    <button key={button} onClick={() => handleClick(button)}>{button}</button>
+                ))}
+            </div>
         </div>
-      </header>
-    </div>
-  );
-}
+    );
+};
 
-export default App;
+export default Calculator;
