@@ -17,7 +17,10 @@ const Calculator = () => {
             try {
                 // Evaluate the expression
                 const evalResult = eval(input);
-                if (!isFinite(evalResult)) {
+                if (isNaN(evalResult)) {
+                    setError('NaN');
+                    setResult('');
+                } else if (!isFinite(evalResult)) {
                     setError('Infinity');
                     setResult('');
                 } else {
